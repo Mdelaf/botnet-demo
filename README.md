@@ -8,13 +8,14 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 #### Autenticación
 
 - Endpoint: `POST /auth`
-- Content: `{"uid": <session-uid>}`
+- Content: `{"uid": <session-uid>, "os": <os>, "user": <username>}`
 - Expected code: `204`
 
 
 #### Solicitud de tareas
 
-- Endpoint: `GET /tasks/{uid}`
+- Endpoint: `GET /tasks`
+- Header: `Authentication: Token <uuid>`
 - Response: `{"task_id": <task-id>, "command": <command>}` o `{}`
 - Expected code: `200`
 
@@ -22,7 +23,8 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 #### Entrega de respuestas
 
 - Endpoint: `POST /delivery`
-- Content: `{"task_id": <task-id>, "uid": <session-uid>, "answer": <answer>}`
+- Header: `Authentication: Token <uuid>`
+- Content: `{"task_id": <task-id>, "answer": <answer>}`
 - Expected code: `204`
 - Other codes: `403` 
 
@@ -51,7 +53,3 @@ posibles debe probar.
 |CHAR SET|Conjunto de caracteres para la fuerza bruta. Letras minúsculas (`l`), letras mayúsculas (`L`), dígitos (`d`) y símbolos (`s`)|`lLd`, `ld`, `lds`|
 |LENGTH|Largo máximo de _string_|`5`, `8`, `10`|
 |PARTITION|Partición de los _strings_ totales que se van a generar|`1/10`, `2/10`, `3/5`, `5/5`|
-
-
-
-#### Ataques de Denegación de Servicios
