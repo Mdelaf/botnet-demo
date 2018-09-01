@@ -10,23 +10,25 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 - Endpoint: `POST /auth`
 - Content: `{"uid": <session-uid>, "os": <os>, "user": <username>}`
 - Expected code: `204`
+- Other codes: `401`
 
 
 #### Solicitud de tareas
 
 - Endpoint: `GET /tasks`
-- Header: `Authentication: Token <uuid>`
+- Header: `Authorization: Token <uuid>`
 - Response: `{"task_id": <task-id>, "command": <command>}` o `{}`
 - Expected code: `200`
+- Other codes: `401`
 
 
 #### Entrega de respuestas
 
 - Endpoint: `POST /delivery`
-- Header: `Authentication: Token <uuid>`
+- Header: `Authorization: Token <uuid>`
 - Content: `{"task_id": <task-id>, "answer": <answer>}`
 - Expected code: `204`
-- Other codes: `403` 
+- Other codes: `401`, `403`
 
 
 
