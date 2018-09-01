@@ -10,7 +10,7 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 - Endpoint: `POST /auth`
 - Content: `{"uid": <session-uid>, "os": <os>, "user": <username>}`
 - Expected code: `204`
-- Other codes: `401`
+- Other codes: `400`
 
 
 #### Solicitud de tareas
@@ -28,7 +28,7 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 - Header: `Authorization: Token <uuid>`
 - Content: `{"task_id": <task-id>, "answer": <answer>}`
 - Expected code: `204`
-- Other codes: `401`, `403`
+- Other codes: `400`, `401`, `403`
 
 
 
