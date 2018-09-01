@@ -15,3 +15,4 @@ class Task(models.Model):
     bot = models.ForeignKey(Bot, on_delete=models.CASCADE)
     command = models.CharField(max_length=500)
     answer = models.CharField(blank=True, max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)

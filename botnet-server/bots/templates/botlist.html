@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block head %}
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- Table -->
+<h2>Client List</h2>
+<br>
+<table id="bots-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>UUID</th>
+      <th>OS</th>
+      <th>Username</th>
+      <th>Last Connection</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for bot in bots %}
+    <tr>
+      <th>{ bot.uuid }</th>
+      <th>{ bot.os }</th>
+      <th>{ bot.username }</th>
+      <th>{ bot.last_connection | naturaltime }</th>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<br>
+<br>
+<table id="tasks-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Bot UUID</th>
+      <th>Bot Username</th>
+      <th>Answer</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for task in tasks %}
+    <tr>
+      <th>{ task.command }</th>
+      <th>{ task.bot.uuid }</th>
+      <th>{ task.bot.username }</th>
+      <th>{ task.answer }</th>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript" language="javascript"
+    src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" language="javascript"
+    src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+  <!-- <script src="{% static 'panel/csrf-cookie.js' %}"></script> -->
+{% endblock %}
