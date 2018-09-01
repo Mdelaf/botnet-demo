@@ -4,14 +4,14 @@ from django.db import models
 # Create your models here.
 class Bot(models.Model):
 
-    uuid = models.CharField()
-    os = models.CharField()
-    username = models.CharField()
+    uuid = models.CharField(max_length=36)
+    os = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     last_connection = models.DateTimeField()
 
 
 class Task(models.Model):
 
     bot = models.ForeignKey(Bot, on_delete=models.CASCADE)
-    command = models.CharField()
-    answer = models.CharField(blank=True)
+    command = models.CharField(max_length=500)
+    answer = models.CharField(blank=True, max_length=200)
