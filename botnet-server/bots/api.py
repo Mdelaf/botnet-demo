@@ -2,10 +2,13 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+
 from bots.auth import bot_authentication
 from bots.models import Bot, Task
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AuthView(View):
 
     def post(self, request):
@@ -32,6 +35,7 @@ class TaskView(View):
         return JsonResponse({"task_id": task.pk, "command": task.command}, status=200)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class DeliveryView(View):
 
     @method_decorator(bot_authentication)
