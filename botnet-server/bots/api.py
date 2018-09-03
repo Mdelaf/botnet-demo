@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import HttpResponse, JsonResponse
@@ -5,7 +6,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from bots.auth import bot_authentication
-from bots.models import Bot, Task
+from bots.models import Bot, Task, Report
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -27,12 +28,19 @@ class TaskView(View):
 
     @method_decorator(bot_authentication)
     def get(self, request):
-        task = Task.objects.filter(bot=request.bot).first()
+        try:
+            task = Task.objects.filter(workers_running__lt=F("total_workers")).latest("created_at")
+        except Task.DoesNotExist:
+            task = None
 
         if not task:
             return JsonResponse({}, status=200)
 
-        return JsonResponse({"task_id": task.pk, "command": task.command}, status=200)
+        task.workers_running += 1
+        command = task.command.strip() + " -p {}/{}".format(task.workers_running, task.total_workers)
+        task.save()
+
+        return JsonResponse({"task_id": task.uuid, "command": command}, status=200)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -46,10 +54,9 @@ class DeliveryView(View):
         if not (task_id and answer):
             return HttpResponse(status=400)
 
-        task = Task.objects.filter(pk=task_id).first()
-        if (not task) or (task.bot != request.bot):
+        task = Task.objects.filter(uuid=task_id).first()
+        if not task:
             return HttpResponse(status=403)
 
-        task.answer = answer
-        task.save()
+        Report.objects.create(task=task, bot=request.bot, data=answer)
         return HttpResponse(status=204)
