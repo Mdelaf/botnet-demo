@@ -4,22 +4,44 @@ import requests
 import uuid
 
 class Client:
+  URL = 'http://httpbin.org/post'
+
   def __init__(self):
     self.os = platform()
     self.user = getuser()
-    self.__uuid = uuid.uuid4()
+    self._uuid = uuid.uuid4()
+    self.task_id = -1
+
+  def get_headers(self):
+    return {
+      'Authorization': 'Token {}'.format(self._uuid),
+    }
 
   def authenticate(self):
-    pass
+    url = '{}/auth/'.format(Client.URL)
+    r = requests.post(url, data={
+      'user': self.user,
+      'uid': self._uuid,
+      'os': self.os,
+    })
+    print(r)
 
   def get_task(self):
-    pass
+    url = '{}/tasks/'.format(Client.URL)
+    r = requests.get(url, headers=self.get_headers())
+    print(r)
 
-  def deliver_task(self):
-    pass
+  def deliver_task(self, answer):
+    url = '{}/delivery/'.format(Client.URL)
+    r = requests.post(url, headers=self.get_headers(), data={
+      'task_id': self.task_id,
+      'answer': answer,
+    })
+    print(r)
 
   def __str__(self):
-    return f'{self.os} {self.user}'
+    return '{} {}'.format(self.os, self.user)
 
 if __name__ == '__main__':
   client = Client()
+  client.authenticate()
