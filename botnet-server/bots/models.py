@@ -13,6 +13,7 @@ class Bot(models.Model):
 class Task(models.Model):
 
     uuid = models.CharField(max_length=36, default=uuid.uuid4)
+    name = models.CharField(max_length=100)
     command = models.CharField(max_length=500)
     total_workers = models.IntegerField()
     workers_running = models.IntegerField(default=0)
