@@ -16,10 +16,10 @@ Including another URLconf
 from django.conf.urls import url
 
 from bots.api import AuthView, TaskView, DeliveryView
-from bots.views import BotListView, CommandView
+from bots.views import IndexView, CommandView
 
 urlpatterns = [
-    url(r'^$', BotListView.as_view(), name="index"),
+    url(r'^$', IndexView.as_view(), name="index"),
     url(r'^run/$', CommandView.as_view(), name="run_command"),
 
     url(r'^auth/$', AuthView.as_view(), name="auth"),

