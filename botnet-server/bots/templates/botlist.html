@@ -57,7 +57,7 @@
 <form action="{% url 'run_command' %}" method="post">
   {% csrf_token %}
   <div class="form-group">
-    <input type="text" class="form-control" name="hash" placeholder="Hash (Ex: 925d7518fc597af0e43f5606f9a51512)">
+    <input type="text" class="form-control" name="url" placeholder="Hashes URL (Ex: http://domain.com/hashlist.txt)">
     <select class="form-control" name="hashing-algorithm">
       <option>MD5</option>
       <option>SHA1</option>

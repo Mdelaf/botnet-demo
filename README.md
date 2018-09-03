@@ -36,7 +36,7 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 
 #### Cracking por fuerza bruta
 
-`bruteforce -h [HASH] -a [HASHING ALGORITHM] -s [CHAR SET] -l [LENGTH] -p [PARTITION]`
+`bruteforce -u [HASHES URL] -a [HASHING ALGORITHM] -s [CHAR SET] -l [LENGTH] -p [PARTITION]`
 
 ##### Descripción
 
@@ -50,7 +50,7 @@ posibles debe probar.
 
 |OPTION|DESCRIPTION|EXAMPLES|
 |------|-----------|--------|
-|HASH|Hash que se quiere crackear|`925d7518fc597af0e43f5606f9a51512`|
+|HASHES URL|Url de un archivo de texto que contiene los hashes que se quieren crackear|`http://domain.com/hashlist.txt`|
 |HASHING ALGORITHM|Algoritmo de hashing que se quiere usar|`md5`, `sha1`|
 |CHAR SET|Conjunto de caracteres para la fuerza bruta. Letras minúsculas (`l`), letras mayúsculas (`L`), dígitos (`d`) y símbolos (`s`)|`lLd`, `ld`, `lds`|
 |LENGTH|Largo máximo de _string_|`5`, `8`, `10`|
