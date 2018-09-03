@@ -2,14 +2,9 @@
 {% load static %}
 {% load humanize %}
 
-{% block head %}
-  <link rel="stylesheet" type="text/css"
-    href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
-{% endblock %}
-
 {% block content %}
 <!-- Table -->
-<h2>Client List</h2>
+<h2>Lista de Bots</h2>
 <br>
 <table id="bots-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
   <thead>
@@ -23,16 +18,18 @@
   <tbody>
   {% for bot in bots %}
     <tr>
-      <th>{ bot.uuid }</th>
-      <th>{ bot.os }</th>
-      <th>{ bot.username }</th>
-      <th>{ bot.last_connection | naturaltime }</th>
+      <td>{{ bot.uuid }}</td>
+      <td>{{ bot.os }}</td>
+      <td>{{ bot.username }}</td>
+      <td>{{ bot.last_connection | naturaltime }}</td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 <br>
 <br>
+
+<h2>Lista de Tareas</h2>
 <table id="tasks-table" class="table table-striped table-bordered text-nowrap" cellspacing="0" width="100%">
   <thead>
     <tr>
@@ -45,22 +42,36 @@
   <tbody>
   {% for task in tasks %}
     <tr>
-      <th>{ task.command }</th>
-      <th>{ task.bot.uuid }</th>
-      <th>{ task.bot.username }</th>
-      <th>{ task.answer }</th>
+      <td>{{ task.command }}</td>
+      <td>{{ task.bot.uuid }}</td>
+      <td>{{ task.bot.username }}</td>
+      <td>{{ task.answer }}</td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
+<br>
+<br>
 
-{% endblock %}
+<h2>Distribuir Tarea de Cracking</h2>
+<form action="{% url 'run_command' %}" method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <input type="text" class="form-control" name="hash" placeholder="Hash (Ex: 925d7518fc597af0e43f5606f9a51512)">
+    <select class="form-control" name="hashing-algorithm">
+      <option>MD5</option>
+      <option>SHA1</option>
+      <option>SHA224</option>
+      <option>SHA256</option>
+      <option>SHA385</option>
+      <option>SHA512</option>
+    </select>
+    <input type="text" class="form-control" name="charset" placeholder="Character set (Ex: lLds)">
+    <input type="text" class="form-control" name="length" placeholder="Word length (Ex: 5)">
+    <input type="text" class="form-control" name="bots" placeholder="Bots (Ex: 10)">
+    <input type="submit" value="Submit" class="btn btn-primary">
+  </div>
+</form>
 
-{% block scripts %}
-  <script type="text/javascript" language="javascript"
-    src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" language="javascript"
-    src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
-  <!-- <script src="{% static 'panel/csrf-cookie.js' %}"></script> -->
 {% endblock %}
