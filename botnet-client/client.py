@@ -1,9 +1,14 @@
 from getpass import getuser
 from platform import platform
+from threading import Thread
 
-import requests  # TODO: Ver si es mucho cacho usar urllib.request
+import urllib.request
+import urllib.parse
+import urllib.error
+import json
 import uuid
 import hashlib
+import time
 
 from word_generator import word_generator
 
@@ -24,60 +29,73 @@ class Client:
 
     def authenticate(self):
         url = '{}/auth/'.format(Client.URL)
-        requests.post(url, data={
+        data = urllib.parse.urlencode({
           'user': self.user,
           'uid': self._uuid,
           'os': self.os,
-        })
+        }).encode()
+        try:
+          req = urllib.request.Request(url, data=data, method='POST')
+          response = urllib.request.urlopen(req)
+        except urllib.error.URLError:
+          return False
+
+        if response.status % 200 < 99:
+          return True
+        return False
 
     def get_task(self):
         url = '{}/tasks/'.format(Client.URL)
-        response = requests.get(url, headers=self.get_headers()).json()
+        req = urllib.request.Request(url, headers=self.get_headers(), method='GET')
+        response = urllib.request.urlopen(req)
+        response = json.loads(response.read().decode('utf-8'))
         if 'task_id' in response and 'command' in response:
             self.task_id = response['task_id']
-            # TODO: Eliminar esta linea después de las pruebas
-            self.parse_command('bruteforce -h bf2d0283ea146823ac357b2bb08b8ee6 -a md5 -s ld -l 5 -p 1/3')
-            # self.parse_command(response['command'])
+            print('STARTING COMMAND: ', response['command'])
+            self.parse_command(response['command'])
 
     def deliver_task(self, answer):
         url = '{}/delivery/'.format(Client.URL)
-        requests.post(url, headers=self.get_headers(), data={
+        data = urllib.parse.urlencode({
           'task_id': self.task_id,
           'answer': answer,
-        })
+        }).encode()
+        req = urllib.request.Request(url, headers=self.get_headers(), data=data, method='POST')
+        urllib.request.urlopen(req)
 
     def parse_command(self, command):
         command_list = command.split()
         kwargs = {command_list[i]: command_list[i+1] for i in range(len(command_list)) if command_list[i].startswith("-")}
         if command_list[0] == 'bruteforce':
-            # TODO: Llamar al metodo en un thread aparte, así no se pierde la comunicacion con el servidor
-            self.bruteforce(**kwargs)
+            crack_process = Thread(target=self.bruteforce, kwargs=kwargs)
+            crack_process.start()
 
     def bruteforce(self, **kwargs):
-        # TODO: Eliminar -h e implementar -u (descargar archivo y guardar lista de hashes en variable)
-        hash_to_crack = kwargs.get("-h")
+        hash_file_url = kwargs.get("-u")
         algorithm = kwargs.get("-a")
         char_set = kwargs.get("-s")
         length = int(kwargs.get("-l"))
         partition = kwargs.get("-p")
 
+        response = urllib.request.urlopen('http://localhost:8080/hashes.txt')
+        hashes = list(response.read().decode('utf8').split('\n'))
+
         if algorithm.lower() == 'md5':
             hash_algorithm = hashlib.md5
         else:
             hash_algorithm = hashlib.sha1
-
         for word in word_generator(char_set, length, partition):
             hash_object = hash_algorithm(bytes(word, 'utf-8')).hexdigest()
-            # TODO: Comparar con todos los hashes de la lista
-            if hash_object == hash_to_crack:
-                # TODO: Si hay un match, llamar a deliver_task
-                answer = "{}: {}".format(hash_to_crack, word)
-                self.deliver_task(answer)
-
+            for hash_to_crack in hashes:
+              if hash_object == hash_to_crack:
+                  answer = "{}: {}".format(hash_to_crack, word)
+                  print(answer)
+                  self.deliver_task(answer)
 
 if __name__ == '__main__':
     client = Client()
-    # TODO: Hacer un while True hasta que se autentique (por si el servidor esta off)
-    client.authenticate()
-    # TODO: Hacer un while True con sleep de 30 segs para pedir tasks de forma permanente
-    client.get_task()
+    while not client.authenticate():
+      time.sleep(3)
+    while True:
+      client.get_task()
+      time.sleep(10)
