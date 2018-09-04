@@ -20,7 +20,8 @@ class AuthView(View):
         if not (uid and os and username):
             return HttpResponse(status=400)
 
-        Bot.objects.create(uuid=uid, os=os, username=username, last_connection=timezone.now())
+        state = "Just authenticated"
+        Bot.objects.create(uuid=uid, os=os, username=username, last_connection=timezone.now(), current_state=state)
         return HttpResponse(status=204)
 
 
@@ -33,12 +34,20 @@ class TaskView(View):
         except Task.DoesNotExist:
             task = None
 
+        if request.bot.current_state == "Running task":
+            return JsonResponse({}, status=200)
+
         if not task:
+            request.bot.current_state = "Waiting for task"
+            request.bot.save()
             return JsonResponse({}, status=200)
 
         task.workers_running += 1
         command = task.command.strip() + " -p {}/{}".format(task.workers_running, task.total_workers)
         task.save()
+
+        request.bot.current_state = "Running task"
+        request.bot.save()
 
         return JsonResponse({"task_id": task.uuid, "command": command}, status=200)
 
@@ -59,4 +68,14 @@ class DeliveryView(View):
             return HttpResponse(status=403)
 
         Report.objects.create(task=task, bot=request.bot, data=answer)
+        return HttpResponse(status=204)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FinishedView(View):
+
+    @method_decorator(bot_authentication)
+    def get(self, request):
+        request.bot.current_state = "Waiting for task"
+        request.bot.save()
         return HttpResponse(status=204)

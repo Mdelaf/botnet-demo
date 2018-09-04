@@ -11,6 +11,7 @@
       <th>UUID</th>
       <th>OS</th>
       <th>Username</th>
+      <th>Current State</th>
       <th>Last Connection</th>
     </tr>
   </thead>
@@ -20,6 +21,7 @@
       <td>{{ bot.uuid }}</td>
       <td>{{ bot.os }}</td>
       <td>{{ bot.username }}</td>
+      <td>{{ bot.current_state }}</td>
       <td>{{ bot.last_connection | naturaltime }}</td>
     </tr>
   {% endfor %}

@@ -30,7 +30,12 @@ Proyecto demostrativo para presentación del curso IIC2523 (Sistemas Distribuido
 - Expected code: `204`
 - Other codes: `400`, `401`, `403`
 
+#### Término de la tarea
 
+- Endpoint: `GET /finished`
+- Header: `Authorization: Token <uuid>`
+- Expected code: `204`
+- Other codes: `401`
 
 ### Comandos
 

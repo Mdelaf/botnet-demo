@@ -151,24 +151,24 @@ passwords = []
 
 # Length 4 words
 random.shuffle(words)
-for word in words[:20]:
+for word in words[:5]:
     passwords.append(word[:4])
 
 # Length 5 words
-for word in words[20:40]:
+for word in words[5:15]:
     passwords.append(word[:5])
 
-for word in words[40:60]:
+for word in words[15:25]:
     passwords.append(word[:4] + str(random.randint(0, 9)))
 
 # Length 6 words
-for word in words[60:80]:
+for word in words[25:40]:
     passwords.append(word[:6])
 
-for word in words[80:100]:
+for word in words[40:55]:
     passwords.append(word[:5] + str(random.randint(0, 9)))
 
-for word in words[100:120]:
+for word in words[55:70]:
     passwords.append(word[:4] + str(random.randint(10, 99)))
 
 sha1_hashes = open("static/hashes/sha1_hashes.txt", "wt")

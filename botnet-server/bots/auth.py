@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from bots.models import Bot
 from django.http import HttpResponse
 
@@ -10,6 +12,8 @@ def bot_authentication(func):
             uuid = authorization_split[1]
             bot = Bot.objects.filter(uuid=uuid).first()
             if bot:
+                bot.last_connection = timezone.now()
+                bot.save()
                 request.bot = bot
                 return func(request, *args, **kwargs)
         return HttpResponse(status=401)

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from bots.api import AuthView, TaskView, DeliveryView
+from bots.api import AuthView, TaskView, DeliveryView, FinishedView
 from bots.views import IndexView, CommandView
 
 urlpatterns = [
@@ -24,5 +24,6 @@ urlpatterns = [
 
     url(r'^auth/$', AuthView.as_view(), name="auth"),
     url(r'^tasks/$', TaskView.as_view(), name="tasks"),
-    url(r'^delivery/$', DeliveryView.as_view(), name="delivery")
+    url(r'^delivery/$', DeliveryView.as_view(), name="delivery"),
+    url(r'^finished/$', FinishedView.as_view(), name="finished")
 ]

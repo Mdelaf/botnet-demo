@@ -7,6 +7,7 @@ class Bot(models.Model):
     uuid = models.CharField(max_length=36)
     os = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
+    current_state = models.CharField(max_length=200, blank=True)
     last_connection = models.DateTimeField()
 
 
