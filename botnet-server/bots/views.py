@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import View
 
@@ -18,6 +18,17 @@ class IndexView(View):
 class CommandView(View):
 
     def post(self, request):
-        print(request.POST)
-        # TODO: Crear tareas para bots
-        pass
+        name = request.POST.get("name")
+        bots = request.POST.get("bots")
+
+        length = request.POST.get("length")
+        url = request.POST.get("url")
+        charset = request.POST.get("charset")
+        hashing_algorithm = request.POST.get("hashing-algorithm")
+
+        if all([name, bots, length, url, charset, hashing_algorithm]):
+            command = "bruteforce -u {} -a {} -s {} -l {}".format(url, hashing_algorithm, charset, length)
+            Task.objects.create(name=name, command=command, total_workers=bots)
+
+        return redirect("index")
+
